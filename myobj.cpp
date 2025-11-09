@@ -1,6 +1,8 @@
 #include "myobj.h"
 #include<QDebug>
 
+
+
 MyObject::MyObject(QGraphicsObject *parent,QString objPath,const enum Type type)
     : QGraphicsObject(parent),movie(nullptr),type(type),CurrentGif(objPath),isDead(false)
 {
@@ -44,12 +46,12 @@ void MyObject::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
     Q_UNUSED(option);
     Q_UNUSED(widget);
     //测试代码
-    // painter->setPen(Qt::white);
-    // painter->drawRect(boundingRect());
-    // //绘制碰撞区域（红色边框）
-    // painter->setPen(Qt::red);
-    // painter->drawPath(shape());
-    //
+    painter->setPen(Qt::white);
+    painter->drawRect(boundingRect());
+    //绘制碰撞区域（红色边框）
+    painter->setPen(Qt::red);
+    painter->drawPath(shape());
+
     int w = movie->currentPixmap().width();
     int h = movie->currentPixmap().height();
     if(movie){

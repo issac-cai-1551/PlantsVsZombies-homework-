@@ -10,9 +10,11 @@ class SelectPlant : public CardsContainer
 public:
     explicit SelectPlant(QGraphicsObject *parent = nullptr);
 
+
     ~SelectPlant() override;
     //添加卡片
     void addCard(QString plantName);
+    void reSet();//当shop清空时需要重新选择植物
 
 
 signals:

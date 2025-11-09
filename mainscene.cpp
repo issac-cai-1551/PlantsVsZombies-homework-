@@ -203,9 +203,11 @@ void MainScene::GamePre(){
         });
         connect(cardDeleteBtn,&QPushButton::clicked,this,[=](){
             if(shop)shop->clearCards();
+            selectPlant->reSet();
         });
         connect(this,&MainScene::GameOver,shop,[=](){
             if(shop)shop->clearCards();
+            selectPlant->reSet();
         });
 
         shop->setPos(290, 0);

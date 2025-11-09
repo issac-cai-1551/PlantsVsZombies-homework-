@@ -36,6 +36,7 @@ class Card: public QGraphicsObject
     int cooldownTime;//冷却时间
     qreal m_cooldownProgress;//冷却状态
     bool isReady;//是否冷却完毕
+    bool isSelectable;
 public:
     explicit Card(QGraphicsObject *parent,QString plantpath);
     // 必须实现的虚函数
@@ -47,6 +48,9 @@ public:
 
     //冷却
     bool IsReady(){return isReady;}
+    //选择版选择卡片逻辑
+    void setUnselectable(){isSelectable = false;update();}//针对选择版只能选择一次得设计
+    void setSelectable(){isSelectable = true;update();}//
     // getter：返回当前冷却进度
     qreal cooldownProgress() const { return m_cooldownProgress; }
     // setter：更新冷却进度并触发重绘

@@ -10,7 +10,7 @@
 
 
 Card::Card(QGraphicsObject *parent, QString plantpath)
-    : QGraphicsObject(parent),sunlightCost(100),cooldownTime(5000),isReady(true),plantPath(plantpath)
+    : QGraphicsObject(parent),sunlightCost(100),cooldownTime(5000),isReady(true),plantPath(plantpath),isSelectable(true)
 {
 
     // 创建卡片背景
@@ -78,21 +78,23 @@ void Card::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
     Q_UNUSED(option);
     Q_UNUSED(widget);
 
-    // 如果冷却中，绘制半透明遮罩和进度条
-    if (!isReady) {
+    // 如果冷却中或不可选择，绘制半透明遮罩和进度条
+    if (!isReady || !isSelectable) {
         //半透明遮罩（覆盖卡片，表示不可点击）
         painter->fillRect(boundingRect(), QColor(0, 0, 0, 50)); // 黑色半透明
+        if(!isReady)
+        {
+            //进度条（从下往上减少，对应冷却进度）
+            qreal progress = m_cooldownProgress;
 
-        //进度条（从下往上减少，对应冷却进度）
-        qreal progress = m_cooldownProgress;
-
-        QRectF barRect(
-            boundingRect().left(),
-            boundingRect().top(), // 顶部对齐
-            boundingRect().width(),
-            boundingRect().height() * progress  // 进度条宽度随进度变化
-            );
-        painter->fillRect(barRect, QColor(0, 0, 0, 100)); // 黑色进度条
+            QRectF barRect(
+                boundingRect().left(),
+                boundingRect().top(), // 顶部对齐
+                boundingRect().width(),
+                boundingRect().height() * progress  // 进度条宽度随进度变化
+                );
+            painter->fillRect(barRect, QColor(0, 0, 0, 100)); // 黑色进度条
+        }
     }
 
 }
@@ -119,8 +121,8 @@ Card::~Card() {
 
 //拖拽种植
 void Card::mousePressEvent(QGraphicsSceneMouseEvent *event) {
-
-    if (event->button() == Qt::LeftButton) {
+    //当isready==false时不响应
+    if (event->button() == Qt::LeftButton && isReady && isSelectable) {
         m_dragStartPosition = event->scenePos();
         qDebug() << "Card pressed";
         emit cardPress(this);//发送点击消息
@@ -131,7 +133,7 @@ void Card::mousePressEvent(QGraphicsSceneMouseEvent *event) {
 
 void Card::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
     // 检查是否按住左键且移动距离达标
-    if (!(event->buttons() & Qt::LeftButton) || !IsReady()) return;
+    if (!(event->buttons() & Qt::LeftButton) || !IsReady() || !isSelectable) return;
     if ((event->pos() - m_dragStartPosition).manhattanLength() < QApplication::startDragDistance()) return;
 
     // 启动拖拽核心代码

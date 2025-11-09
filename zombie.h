@@ -52,7 +52,7 @@ protected:
 
 
     //需要重写
-    QRectF boundingRect() const override;
+    // QRectF boundingRect() const override;
     // 碰撞区域（仅躯干部分）
     QPainterPath shape() const override ;
 

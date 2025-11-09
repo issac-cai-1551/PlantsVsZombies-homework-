@@ -79,18 +79,18 @@ void Zombie::continueMoving() {
     movable = true;
 }
 
-QRectF Zombie::boundingRect() const{
-    QRectF rawRect = MyObject::boundingRect();
+// QRectF Zombie::boundingRect() const{
+    // QRectF rawRect = MyObject::boundingRect();
 
-    rawRect.setX(-24);
-    rawRect.setRight(75);
-    rawRect.setY(-55);
-    return rawRect;
+    // rawRect.setX(-24);
+    // rawRect.setRight(75);
+    // rawRect.setY(-55);
+    // return rawRect;
     // if(movie && movie->state() == QMovie::Running){
     //     return QRectF(0,0,movie->currentPixmap().width(),movie->currentPixmap().height());
     // }
     // else return QRectF(0,0,50,50);
-}
+// }
 // 碰撞区域（仅躯干部分）
 QPainterPath Zombie::shape() const {
     QPainterPath path;
