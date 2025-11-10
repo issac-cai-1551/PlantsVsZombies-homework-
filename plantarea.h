@@ -44,7 +44,7 @@ class PlantArea:public QGraphicsObject
     void setEmpty(bool isEmpty){this->isEmpty = isEmpty;}
     void dealLandType();
 public:
-    explicit PlantArea(int row,int col,enum LandType landType = LandType::Nomal,QTimer *bulletTimer = nullptr);
+    explicit PlantArea(int row,int col,enum LandType landType = LandType::Nomal);
     // 必须实现的虚函数
     QRectF boundingRect() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;

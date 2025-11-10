@@ -321,7 +321,7 @@ void MainScene::PlantAreaGenerate(){
             default:
                 break;
             }
-            PlantArea *area = new PlantArea(i,j,landType,moveTimer);
+            PlantArea *area = new PlantArea(i,j,landType);
             area->setPos(QPointF(150 +105 ,90) + QPointF(area->w()*j , area->h()*i));//81,94
             //连接向日葵生成的阳光
             connect(area,&PlantArea::sunlightProduced,this,[=](SunLight *sunlight){
@@ -359,33 +359,34 @@ void MainScene::ZombieGenerate(){
     double y = 100 + row*94;
     int offsetX = QRandomGenerator::global()->bounded(0,100);//避免僵尸同时出现，用距离控制时间
     QPointF start(this->width()+200+offsetX,y);
-    QPointF end(100,y);
+    // QPointF end(100,y);
     //
     int gen = QRandomGenerator::global()->bounded(0,11);//随机0到4
     Zombie *zombie=nullptr;
     //随机决定僵尸种类
     if(gen<3)
-        zombie = new NomalZombie(start,end);
+        zombie = new NomalZombie();
     else if(gen<5){
-        zombie = new ScreenZombie(start,end);
+        zombie = new ScreenZombie();
     }
     else if(gen<7){
-        zombie = new BucketZombie(start,end);
+        zombie = new BucketZombie();
     }
     else if(gen<9){
-        zombie = new ConeZombie(start,end);
+        zombie = new ConeZombie();
     }
     else if(gen<11){
-        zombie = new FootballZombie(start,end);
+        zombie = new FootballZombie();
     }
     if(zombie)
     {
+        zombie->setPos(start);
         scene->addItem(zombie);
         //处理僵尸行走
         // connect(moveTimer,&QTimer::timeout,zombie,[=](){
         //     zombie->proceed();
         // });
-        Animate(zombie).duration(AnimationType::Move,10000).move(QPointF(-900,0));
+        Animate(zombie).speed(AnimationType::Move,zombie->getSpeed()).move(QPointF(-900,0));
         //处理僵尸胜利的请款
         connect(zombie,&Zombie::zombieSuccess,this,[=](){
 

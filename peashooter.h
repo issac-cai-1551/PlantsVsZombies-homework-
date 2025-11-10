@@ -9,12 +9,12 @@ class Peashooter : public Plant
     Q_OBJECT
 
 public:
-    explicit Peashooter(QGraphicsObject *parent,QTimer *bulletTimer);
+    explicit Peashooter(QGraphicsObject *parent);
     ~Peashooter();
 
 protected:
     void plantAction()override;
-    QTimer *m_bulletTimer;
+
     int bulletHz;
 
 };

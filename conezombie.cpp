@@ -1,10 +1,9 @@
 #include "conezombie.h"
 
-ConeZombie::ConeZombie(QPointF start,QPointF end)
+ConeZombie::ConeZombie()
     :Zombie(":/res/GameRes/images/ConeZombieWalk.gif",ZombieType::ConeZombie,
              ":/res/GameRes/images/ConeZombieAttack.gif",
-             2000,29,500,
-             start,end)//int hp,int speed,int attackpower,
+             2000,29,500)//int hp,int speed,int attackpower,
 {
 
 }

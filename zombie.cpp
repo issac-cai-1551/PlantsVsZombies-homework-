@@ -1,14 +1,14 @@
 #include "zombie.h"
+#include"animate.h"
 #include<QLineF>
 #include<QGraphicsItem>
 
 
 Zombie::Zombie(QString objPath,
-               enum ZombieType zombieType,QString attackingGif,int hp,int speed,int attackpower,
-               QPointF start,QPointF end)
+               enum ZombieType zombieType,QString attackingGif,int hp,int speed,int attackpower)
     :MyObject(nullptr,objPath,Type::ZOMBIE),
     hp(hp),speed(speed),CurrentSpeedRate(1),attackPower(attackpower),attackingGif(attackingGif),zombieType(zombieType),
-    startPos(start),endPos(end),Hz(30),movable(true),slowEffect(0)//81,94
+    Hz(30),movable(true),slowEffect(0)//81,94
 {
 
     currentHp = hp;
@@ -47,13 +47,6 @@ Zombie::~Zombie(){
 
 }
 
-//
-void Zombie::proceed(){
-    if(!isDead && movable)
-    setPos(x()-CurrentSpeedRate*speed/Hz,y());
-    update();
-}
-
 void Zombie::attack(Plant *plant){
     //如果没有正在攻击的植物，然后来信号了
     if(!attackedPlant){
@@ -73,10 +66,13 @@ void Zombie::setCurrentGif(){
 }
 void Zombie::stopMoving() {
     movable = false;
+    Animate(this).stop(AnimationType::Move);
+
 }
 
 void Zombie::continueMoving() {
     movable = true;
+    Animate(this).speed(AnimationType::Move,speed).move(QPointF(-900,0));
 }
 
 // QRectF Zombie::boundingRect() const{
@@ -162,6 +158,7 @@ void Zombie::dealDead(enum DieType dieType){
 
 void Zombie::setSpeed(double rate,int duration){
     CurrentSpeedRate = rate;
+    if(movable)Animate(this).speed(AnimationType::Move,CurrentSpeedRate * speed).move(QPointF(-900,0));
     slowEffect++;
     hitEffect->setColor(Qt::blue);
     QTimer::singleShot(duration,this,[=](){
@@ -169,6 +166,7 @@ void Zombie::setSpeed(double rate,int duration){
         if(!slowEffect)
         {
             CurrentSpeedRate = 1;
+            if(movable)Animate(this).speed(AnimationType::Move,CurrentSpeedRate * speed).move(QPointF(-900,0));
             hitEffect->setStrength(0.0);
             hitEffect->setColor(Qt::red);
         }
@@ -177,22 +175,5 @@ void Zombie::setSpeed(double rate,int duration){
 }
 //81 94
 void Zombie::changeRow(enum Direction dir){
-    QPropertyAnimation *animation = new QPropertyAnimation(this,"y");
-    animation->setStartValue(y());
-    animation->setDuration(1000);//1 s
-    switch (dir) {
-    case Direction::Up:
-    {
-        animation->setEndValue(y()-94);
-        break;
-    }
-    case Direction::Down:
-    {
-        animation->setEndValue(y()+94);
-        break;
-    }
-    default:
-        break;
-    }
-    animation->start(QPropertyAnimation::DeleteWhenStopped);
+
 }

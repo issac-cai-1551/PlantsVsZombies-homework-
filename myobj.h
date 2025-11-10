@@ -8,6 +8,9 @@
 #include<QPropertyAnimation>
 #include<QTimer>
 #include<QGraphicsScene>
+class GameScene;
+
+class Animate;
 
 enum class Type{
     PLANT,
@@ -56,6 +59,7 @@ public:
     ~MyObject();
 
 protected:
+    GameScene* gameScene;
     const enum Type type;
     const QString objPath;
     QString CurrentGif;

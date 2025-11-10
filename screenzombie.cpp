@@ -1,11 +1,11 @@
 #include "screenzombie.h"
 #include<QDebug>
 
-ScreenZombie::ScreenZombie(QPointF start,QPointF end)
+ScreenZombie::ScreenZombie()
     :Zombie(":/res/GameRes/images/ScreenZombieWalk.gif",ZombieType::NormalZombie,
              ":/res/GameRes/images/ScreenZombieAttack.gif",
-             1000,29,500,
-             start,end)//int hp,int speed,int attackpower,
+             1000,29,500
+             )//int hp,int speed,int attackpower,
 {
 
 }

@@ -7,7 +7,7 @@ class BucketZombie : public Zombie
 {
     Q_OBJECT
 public:
-    explicit BucketZombie(QPointF start,QPointF end);
+    explicit BucketZombie();
 
     ~BucketZombie();
 

@@ -7,7 +7,7 @@ class ConeZombie : public Zombie
 {
     Q_OBJECT
 public:
-    explicit ConeZombie(QPointF start,QPointF end);
+    explicit ConeZombie();
 
     ~ConeZombie();
 

@@ -1,7 +1,7 @@
 #include "snowpea.h"
 
-SnowPea::SnowPea(QString objPath,int power,QTimer *moveTimer)
-    :Bullet(objPath,power,moveTimer)
+SnowPea::SnowPea(QString objPath,int power)
+    :Bullet(objPath,power)
 {
 
 }

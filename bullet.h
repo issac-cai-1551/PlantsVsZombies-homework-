@@ -8,13 +8,15 @@ class Bullet : public MyObject
 {
     Q_OBJECT
     int power;//子弹威力
-    QTimer *moveTimer;
+    // QTimer *moveTimer;
     int Hz;
     double speed;
 public:
-    explicit Bullet(QString objPath,int power,QTimer *moveTimer);
-    void advance(int phase) override;
+    explicit Bullet(QString objPath,int power);
+
     int getHz(){return Hz;}
+    double getSpeed(){return speed;}
+    void setSpeed(double speed){speed = speed;}
     ~Bullet();
     static int bulletNum;
     static int delNum;

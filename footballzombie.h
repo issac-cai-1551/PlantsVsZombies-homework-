@@ -8,7 +8,7 @@ class FootballZombie : public Zombie
 {
     Q_OBJECT
 public:
-    explicit FootballZombie(QPointF start,QPointF end);
+    explicit FootballZombie();
 
     ~FootballZombie();
 

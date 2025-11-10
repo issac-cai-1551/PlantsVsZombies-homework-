@@ -21,11 +21,14 @@
 #include"myobj.h"
 #include"plant.h"
 #include"zombie.h"
+#include<QSettings>
 
 
 class GameScene : public QGraphicsScene
 {
     Q_OBJECT
+    //archive
+    QSettings *settings;
     //相关控件
     Shop *shop;//商店
     SelectPlant *selectPlant;//选择板
@@ -57,6 +60,8 @@ public:
 public slots:
     void plant();//种植植物
     void move(MyObject* target,QPointF& dest);//移动物体
+signals:
+    void GameOver();
 
     
 };

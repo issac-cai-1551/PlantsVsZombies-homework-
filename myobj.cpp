@@ -1,4 +1,6 @@
 #include "myobj.h"
+#include"animate.h"
+#include"gamescene.h"
 #include<QDebug>
 
 
@@ -6,6 +8,12 @@
 MyObject::MyObject(QGraphicsObject *parent,QString objPath,const enum Type type)
     : QGraphicsObject(parent),movie(nullptr),type(type),CurrentGif(objPath),isDead(false)
 {
+    //得到scene
+    gameScene = dynamic_cast<GameScene*>(this->scene());
+    if(!gameScene){
+        qDebug()<<"gameScene 转化失败，对象创建失败";
+        deleteLater();
+    }
     //启动计时器并连接
     timer = new QTimer();
     connect(timer,&QTimer::timeout,this,[=](){

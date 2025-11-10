@@ -1,10 +1,11 @@
 #include "snowpeashooter.h"
 #include"snowpea.h"
+#include"animate.h"
 #include<QGraphicsScene>
 #include<QGraphicsRectItem>
 
-SnowPeashooter::SnowPeashooter(QGraphicsObject *parent,QTimer *bulletTimer)
-    :Plant(parent,":/res/GameRes/images/SnowPea.gif",200),bulletHz(34),m_bulletTimer(bulletTimer)
+SnowPeashooter::SnowPeashooter(QGraphicsObject *parent)
+    :Plant(parent,":/res/GameRes/images/SnowPea.gif",200),bulletHz(34)
 {
 
     //单独的射程检测区域（仅用于检测僵尸，不影响物理碰撞）
@@ -40,10 +41,11 @@ void SnowPeashooter::plantAction(){
 
     connect(this,&Plant::findZombie,this,[=](MyObject *zombie){
 
-        if(scene() && Bullet::bulletNum<Bullet::delNum+200 && m_bulletTimer->isActive()){
-            SnowPea *bullet = new SnowPea(":/res/GameRes/images/PeaSnow.png",100,m_bulletTimer);
+        if(scene() && Bullet::bulletNum<Bullet::delNum+200){
+            SnowPea *bullet = new SnowPea(":/res/GameRes/images/PeaSnow.png",100);
             connect(this,&MyObject::GameOver,bullet,&MyObject::GameOver);//
             bullet->setPos(this->scenePos()+QPointF(40,-20));
+            Animate(bullet).speed(AnimationType::Move,bullet->getSpeed()).move(QPointF(900,0));
             scene()->addItem(bullet);
         }
 

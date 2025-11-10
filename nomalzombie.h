@@ -7,7 +7,7 @@ class NomalZombie : public Zombie
 {
     Q_OBJECT
 public:
-    explicit NomalZombie(QPointF start,QPointF end);
+    explicit NomalZombie();
 
     ~NomalZombie();
 

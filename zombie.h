@@ -15,14 +15,16 @@ class Zombie : public MyObject
     int Hz;//僵尸走动帧率
 public:
     explicit Zombie(QString objPath,
-                    enum ZombieType zombieType,QString attackingGif,int hp,int speed,int attackpower,
-                    QPointF start,QPointF end);
+                    enum ZombieType zombieType,QString attackingGif,int hp,int speed,int attackpower);
     //与植物交互效果
     void beHeated(int power,enum DieType dieType);
+    //将各种伤害独立成一个函数，beHeated仅提供扣血
+    void getPea(int power);
+    void getSnowPea(int power);
+
     void setSpeed(double rate,int duration);
     void changeRow(enum Direction dir);
     //
-    void proceed();
     //给外界的信息
     int getSpeed(){return speed;}
     ~Zombie();

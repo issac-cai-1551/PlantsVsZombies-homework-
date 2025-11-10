@@ -1,10 +1,10 @@
 #include "footballzombie.h"
 
-FootballZombie::FootballZombie(QPointF start,QPointF end)
+FootballZombie::FootballZombie()
     :Zombie(":/res/GameRes/images/FootballZombieWalk.gif",ZombieType::FootballZombie,
              ":/res/GameRes/images/FootballZombieAttack.gif",
-             2000,40,500,
-             start,end)//int hp,int speed,int attackpower,
+             2000,40,500
+             )//int hp,int speed,int attackpower,
 {
 
 }

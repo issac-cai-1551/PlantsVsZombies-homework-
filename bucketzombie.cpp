@@ -1,10 +1,9 @@
 #include "bucketzombie.h"
 
-BucketZombie::BucketZombie(QPointF start,QPointF end)
+BucketZombie::BucketZombie()
     :Zombie(":/res/GameRes/images/BucketZombieWalk.gif",ZombieType::BucketZombie,
              ":/res/GameRes/images/BucketZombieAttack.gif",
-             2000,29,500,
-             start,end)//int hp,int speed,int attackpower,
+             2000,29,500)//int hp,int speed,int attackpower,
 {
 
 }

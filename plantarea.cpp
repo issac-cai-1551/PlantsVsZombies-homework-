@@ -3,8 +3,8 @@
 #include<QMimeData>
 #include<iostream>
 
-PlantArea::PlantArea(int row,int col,enum LandType landType,QTimer *bulletTimer)
-    :width(81),height(94),isEmpty(true),landType(landType),bg(nullptr),Myplant(nullptr),bulletTimer(bulletTimer),row(row),col(col)
+PlantArea::PlantArea(int row,int col,enum LandType landType)
+    :width(81),height(94),isEmpty(true),landType(landType),bg(nullptr),Myplant(nullptr),row(row),col(col)
 {
    setAcceptHoverEvents(true); // 关键：允许接收悬停事件
     setAcceptDrops(true); // 启用拖放
@@ -45,7 +45,7 @@ void PlantArea::plant(enum PlantType plantType){
         case PlantType::PEASHOOTER:
         {
             qDebug()<<"plant pea";
-            newPlant = new Peashooter(this,bulletTimer);
+            newPlant = new Peashooter(this);
             break;
         }
         case PlantType::SUNLIGHT:
@@ -81,7 +81,7 @@ void PlantArea::plant(enum PlantType plantType){
         {
             qDebug()<<"plant snow";
 
-            newPlant = new SnowPeashooter(this,bulletTimer);
+            newPlant = new SnowPeashooter(this);
             break;
         }
         default:

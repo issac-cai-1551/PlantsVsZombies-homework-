@@ -1,11 +1,10 @@
 #include "nomalzombie.h"
 #include<QDebug>
 
-NomalZombie::NomalZombie(QPointF start,QPointF end)
+NomalZombie::NomalZombie()
     :Zombie(":/res/GameRes/images/ZombieWalk1.gif",ZombieType::NormalZombie,
              ":/res/GameRes/images/ZombieAttack.gif",
-            1000,29,500,
-            start,end)//int hp,int speed,int attackpower,
+            1000,29,500)//int hp,int speed,int attackpower,
 {
 
 }

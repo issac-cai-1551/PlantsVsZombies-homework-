@@ -7,7 +7,7 @@ class ScreenZombie : public Zombie
 {
     Q_OBJECT
 public:
-    explicit ScreenZombie(QPointF start,QPointF end);
+    explicit ScreenZombie();
 
     ~ScreenZombie();
 

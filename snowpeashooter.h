@@ -9,12 +9,12 @@ class SnowPeashooter : public Plant
     Q_OBJECT
 
 public:
-    explicit SnowPeashooter(QGraphicsObject *parent,QTimer *bulletTimer);
+    explicit SnowPeashooter(QGraphicsObject *parent);
     ~SnowPeashooter();
 
 protected:
     void plantAction()override;
-    QTimer *m_bulletTimer;
+
     int bulletHz;
 
 };

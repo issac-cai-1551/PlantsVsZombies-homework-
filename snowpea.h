@@ -7,7 +7,7 @@ class SnowPea : public Bullet
 {
     Q_OBJECT
 public:
-    explicit SnowPea(QString objPath,int power,QTimer *moveTimer);
+    explicit SnowPea(QString objPath,int power);
 
 protected:
     void DealZombie(Zombie *zombie)override;
