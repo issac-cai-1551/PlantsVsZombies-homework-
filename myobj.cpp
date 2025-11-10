@@ -100,7 +100,9 @@ void MyObject::ToCurrentGif(){
 }
 
 MyObject::~MyObject(){
+    emit needToDel();
     disconnect(this);
+
     delete timer;
 }
 void MyObject::GamePause(){

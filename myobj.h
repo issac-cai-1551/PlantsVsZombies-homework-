@@ -71,6 +71,7 @@ signals:
     void Meet(MyObject *Meeter);
     void movieFinished();
     void GameOver();
+    void needToDel();
 
 protected slots:
     virtual void frameChanged(int frameNumber);

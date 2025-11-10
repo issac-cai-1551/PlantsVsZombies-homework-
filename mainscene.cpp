@@ -4,8 +4,7 @@
 #include<QVariantList>
 #include<QPalette>
 #include<QFile>
-
-
+#include"animate.h"
 
 MainScene::MainScene(QWidget *parent)
     : QMainWindow(parent)
@@ -383,9 +382,10 @@ void MainScene::ZombieGenerate(){
     {
         scene->addItem(zombie);
         //处理僵尸行走
-        connect(moveTimer,&QTimer::timeout,zombie,[=](){
-            zombie->proceed();
-        });
+        // connect(moveTimer,&QTimer::timeout,zombie,[=](){
+        //     zombie->proceed();
+        // });
+        Animate(zombie).duration(AnimationType::Move,10000).move(QPointF(-900,0));
         //处理僵尸胜利的请款
         connect(zombie,&Zombie::zombieSuccess,this,[=](){
 

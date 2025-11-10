@@ -30,7 +30,9 @@
 #include <QtMultimedia/QMediaPlayer>
 #include <QtMultimedia/QSoundEffect>
 #include <QAudioOutput>
+#include"gamescene.h"
 QT_BEGIN_NAMESPACE
+
 namespace Ui {
 class MainScene;
 }

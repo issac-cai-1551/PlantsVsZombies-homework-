@@ -43,7 +43,7 @@ class Animate
     static QHash<MyObject*,QPropertyAnimation*> scaleAnim;
     static QHash<MyObject*,QPropertyAnimation*> opacityAnim;
 public:
-    Animate(MyObject* target,GameScene* scene);
+    Animate(MyObject* target,GameScene* scene = nullptr);
     ~Animate();
     Animate &move(QPointF toPos,bool asDir=true);
     Animate &scale(qreal toScale);
@@ -58,7 +58,10 @@ public:
     Animate &finish(enum AnimationType animType,std::function<void(void)> functor);
     Animate &finish(enum AnimationType animType,std::function<void(bool)> functor = [](bool) {});
 
-
+    Animate &pause(enum AnimationType animType);//停止动画
+    Animate &resume(enum AnimationType animType);//继续动画
+public slots:
+    static void onTargetDestroyed(QObject* target);
 };
 
 #endif // ANIMATE_H

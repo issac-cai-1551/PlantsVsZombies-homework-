@@ -23,6 +23,8 @@ public:
     void changeRow(enum Direction dir);
     //
     void proceed();
+    //给外界的信息
+    int getSpeed(){return speed;}
     ~Zombie();
 
 signals:
