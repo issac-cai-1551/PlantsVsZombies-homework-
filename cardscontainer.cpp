@@ -3,7 +3,7 @@
 #include<QDebug>
 
 
-CardsContainer::CardsContainer(QString pixmapPath,QGraphicsObject *parent) : QGraphicsObject(parent),pixmapItem(nullptr)
+CardsContainer::CardsContainer(QString pixmapPath,QGraphicsObject *parent) : MyObject(parent),pixmapItem(nullptr)
 {
     // 创建内部的QPixmapItem
     pixmapItem = new QGraphicsPixmapItem(QPixmap(pixmapPath), this);

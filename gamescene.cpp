@@ -1,18 +1,210 @@
 #include "gamescene.h"
 #include"animate.h"
+#include<QAudioOutput>
+#include<QGraphicsProxyWidget>
+#include<QTimeLine>
+#include<QGraphicsItemAnimation>
 
 GameScene::GameScene(QObject *parent)
-    : QGraphicsScene{parent}
+    : QGraphicsScene(parent),settingsMenu(nullptr),
+    plantareas(),zombies(),plants(),
+    plantAreaRow(),plantRow(),zombieRow(),
+    bgPath(":/res/GameRes/images/Background.jpg"),gameBg(nullptr)
 {
+    //archive
+    settings = new QSettings("config.ini",QSettings::IniFormat);
+    //相关控件
+    shop = new Shop();//商店
+    addItem(shop);
+    selectPlant = new SelectPlant();//选择板
+    addItem(selectPlant);
+    shovel = new Shovel;//铲子
+    addItem(shovel);
+    gameBg = new QGraphicsPixmapItem(QPixmap(bgPath));
+    addItem(gameBg);
 
+    // //音效
+    // bgMus = new QMediaPlayer(this);
+    // audioOutput = new QAudioOutput(this);
+    // audioOutput->setVolume(0.5);
+    // bgMus->setAudioOutput(audioOutput);
+    // bgMus->setSource(QUrl("qrc:/res/GameRes/GrazyDave2.mp3"));
+    // bgMus->setLoops(-1);
+    // bgMus->play();
+
+
+
+    //QTimer
+    waveTimer = new QTimer(this);
+    waveTimer->start(1000);
+    waveTimer->stop();
+}
+void GameScene::menuInit(){
+    connect(settingsMenu,&SettingsMenu::GamePause,this,&GameScene::GamePause);
+    connect(settingsMenu,&SettingsMenu::GameContinue,this,&GameScene::GameContinue);
+    connect(settingsMenu,&SettingsMenu::getBack,this,[=](){
+            emit GameOver();//退出就结束游戏
+    });
 }
 
+void GameScene::playBGM(){
+    //背景音乐
+    bgMus = new QMediaPlayer(this);
+    audioOutput = new QAudioOutput(this);
+    audioOutput->setVolume(0.5);
+    connect(settingsMenu,&SettingsMenu::volumeChanged,this,[=](int volume){
+        audioOutput->setVolume(double(volume)/100);
+    });
+    bgMus->setAudioOutput(audioOutput);
+    bgMus->setSource(QUrl("qrc:/res/GameRes/GrazyDave2.mp3"));
+    bgMus->setLoops(-1);
+    bgMus->play();
+}
+//选这植物阶段
+void GameScene::GamePre(){
+    //选择版
+    cardAvailable();
+    selectPlant->setPos(290,100);
+    //设置背景
+    gameBg->setPos(-330,0);
+    qDebug()<<gameBg->pos()<<gameBg->x()<<gameBg->y();
+    gameBg->setZValue(-100);
+
+    //设置开始按键
+    QPushButton *startBtn = new QPushButton("Start");
+    QPalette palette_Btn;//按键统一样式
+    palette_Btn.setBrush(QPalette::Button,QBrush(QPixmap(":/res/GameRes/images/Button.png")));
+    startBtn->setPalette(palette_Btn);
+    startBtn->resize(100,40);
+    QGraphicsProxyWidget *start_proxy = addWidget(startBtn);
+    //设置按钮在场景中的位置
+    start_proxy->setPos(900,500);
+    //设置卡片清空按键
+    QPushButton *cardDeleteBtn = new QPushButton("Clear Cards");
+    cardDeleteBtn->setPalette(palette_Btn);
+    cardDeleteBtn->resize(100,40);
+    QGraphicsProxyWidget *cardDelete_proxy = addWidget(cardDeleteBtn);
+    //设置按钮在场景中的位置
+    cardDelete_proxy->setPos(900,400);
+
+    // //设置场景移动动画
+    // connect(waveTimer,&QTimer::timeout,this,[=](){
+    //     if(gameBg->x()<0){
+
+    //         gameBg->setPos(gameBg->x()+10,0);
+    //     }
+    //     //selectpalnt
+    //     if(selectPlant->y()>-500){
+    //         selectPlant->setPos(290,selectPlant->y()-10);
+    //     }
+    // });
+    //选择结束
+    connect(startBtn,&QPushButton::clicked,this,[=](){
+        emit GameContinue();
+        start_proxy->hide();
+        cardDelete_proxy->hide();
+        waveTimer->start();
+        moveBg();
+        Animate(selectPlant).duration(AnimationType::Move,1000).move(QPointF(0,-600));
+
+        QTimer::singleShot(1200,this,[=](){
+            GameStart();
+        });
+
+    });
+    connect(this,&GameScene::GameOver,this,[=](){
+        start_proxy->show();
+        cardDelete_proxy->show();
+    });
+
+
+    setItemIndexMethod(QGraphicsScene::NoIndex);
+
+
+    //选择卡片逻辑
+    connect(selectPlant,&SelectPlant::cardPress,shop,[=](Card *card){
+        shop ->addCard(card->getPlantPath());
+    });
+    connect(cardDeleteBtn,&QPushButton::clicked,this,[=](){
+        if(shop)shop->clearCards();
+        selectPlant->reSet();
+    });
+    connect(this,&GameScene::GameOver,shop,[=](){
+        if(shop)shop->clearCards();
+        selectPlant->reSet();
+    });
+    shop->setPos(290, 0);
+}
+void GameScene::GameStart(){
+
+    //shovel
+    shovel->setPos(shovel->getStartPos());
+
+    //sunlight generate
+    connect(waveTimer,&QTimer::timeout,this,[=](){
+        int gen = QRandomGenerator::global()->bounded(1,20);
+        int x = QRandomGenerator::global()->generateDouble()*this->width();
+        int y = QRandomGenerator::global()->generateDouble()*this->height();
+        if(gen == 1){
+            SunLight *sunlight = new SunLight;
+            sunlight->setPos(x,y);
+            //仅仅收集阳光使用bool(int)
+            bool (Shop::*func)(int) = &Shop::sunlightValueShow;
+            connect(sunlight,&SunLight::sunlightCollected,shop,func);
+
+            addItem(sunlight);
+            connect(this,&GameScene::GameOver,sunlight,&QGraphicsObject::deleteLater);
+        }
+    });
+
+    //zombie generate
+    QMetaObject::Connection Conn;
+    Conn = connect(waveTimer,&QTimer::timeout,this,[=](){
+        int gen = QRandomGenerator::global()->bounded(0,1);//僵尸数量越大，越不用以生成
+        if(gen == 0)
+        {
+            ZombieGenerate();
+        }
+    });
+
+    //add card
+    //cardADD();
+
+    //plantarea
+    PlantAreaGenerate();
+
+    //zombie generate
+    ZombieGenerate();
+}
 void GameScene::move(MyObject* target,QPointF& dest){
-
+        Animate(target).move(dest,false);
 }
 
-void GameScene::plant(){
+void GameScene::plant(enum PlantType plantType){
 
+}
+void GameScene::moveBg(){
+    int duration = 1000;
+    int hz = 10;
+    QTimeLine* timeLine = new QTimeLine(duration); // 动画时长1000ms
+
+    timeLine->setUpdateInterval(hz);
+    timeLine->setFrameRange(0, duration/hz); // 帧范围
+    timeLine->setEasingCurve(QEasingCurve::Linear);
+    timeLine->setLoopCount(1);
+
+    QGraphicsItemAnimation* moveAnim = new QGraphicsItemAnimation();
+    moveAnim->setItem(gameBg);
+    moveAnim->setTimeLine(timeLine);
+
+    moveAnim->setPosAt(0, gameBg->pos());
+    moveAnim->setPosAt(1, QPointF(0,0));
+
+    connect(timeLine, &QTimeLine::finished,this, [=]() {
+        timeLine->deleteLater();
+        moveAnim->deleteLater();
+    });
+    timeLine->start();
 }
 void GameScene::PlantAreaGenerate(){
     //打开配置文件
@@ -43,6 +235,10 @@ void GameScene::PlantAreaGenerate(){
                 break;
             }
             PlantArea *area = new PlantArea(i,j,landType);
+            //将实例加入集合
+            plantareas.push_back(area);
+            plantAreaRow[i].push_back(area);
+            //设置位置
             area->setPos(QPointF(150 +105 ,90) + QPointF(area->w()*j , area->h()*i));//81,94
             //连接向日葵生成的阳光
             connect(area,&PlantArea::sunlightProduced,this,[=](SunLight *sunlight){
@@ -67,9 +263,20 @@ void GameScene::PlantAreaGenerate(){
     settings->endGroup();
 }
 void GameScene::ZombieGenerate(){
-    int gen = QRandomGenerator::global()->bounded(0,11);//随机0到4
+    //打开配置文件
+    settings->beginGroup("MapInfo");
+    QVariantList zombieRow = settings->value("zombieRow").toList();
+    settings->endGroup();
+    //
+    int index = QRandomGenerator::global()->bounded(0,zombieRow.size());//随机1到5行
+    int row = zombieRow[index].toInt();
+    //
+    double y = 100 + row*94;
     int offsetX = QRandomGenerator::global()->bounded(0,100);//避免僵尸同时出现，用距离控制时间
-    QPointF start(this->width()+200+offsetX,300);
+    QPointF start(this->width()+200+offsetX,y);
+    // QPointF end(100,y);
+    //
+    int gen = QRandomGenerator::global()->bounded(0,11);//随机0到4
     Zombie *zombie=nullptr;
     //随机决定僵尸种类
     if(gen<3)
@@ -89,7 +296,10 @@ void GameScene::ZombieGenerate(){
     if(zombie)
     {
         zombie->setPos(start);
+        zombies.push_back(zombie);
+        this->zombieRow[row].push_back(zombie);
         addItem(zombie);
+
         //处理僵尸行走
         // connect(moveTimer,&QTimer::timeout,zombie,[=](){
         //     zombie->proceed();
@@ -113,12 +323,15 @@ void GameScene::cardAvailable(){
         selectPlant->addCard(":/res/GameRes/images/SnowPea.png");
     }
 }
-void GameScene::GameStart(){
 
+void GameScene::addItem(QGraphicsItem* item){
+    QGraphicsScene::addItem(item);
 }
-void GameScene::GamePre(){
+void GameScene::addItem(MyObject* item){
+    QGraphicsScene::addItem(item);
 
+    connect(this,&GameScene::GamePause,item,&MyObject::GamePause);
+    connect(this,&GameScene::GameContinue,item,&MyObject::GameContinue);
+    connect(this,&GameScene::GameOver,item,&MyObject::GameOver);
 }
-
-
 

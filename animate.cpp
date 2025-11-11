@@ -8,7 +8,7 @@ QHash<MyObject*,QPropertyAnimation*> Animate::opacityAnim;
 Animate::Animate(MyObject* target,GameScene* scene):
     type(0),
     m_duration_m(0),m_duration_s(0),m_duration_o(0)
-    , m_speed_m(5),m_speed_s(5),m_speed_o(5),
+    , m_speed_m(20),m_speed_s(20),m_speed_o(20),
     toPos(), toScale(0), toOpacity(0),
     m_shape_m(QEasingCurve::Linear),
     m_shape_s(QEasingCurve::Linear),
@@ -242,9 +242,15 @@ Animate& Animate::finish(enum AnimationType animType,std::function<void(bool)>){
 Animate& Animate::pause(enum AnimationType animType){
     //停止动画
     switch (animType) {
+
     case AnimationType::Move:
         if(anim_m->state() == QAbstractAnimation::Running)
+        {
+
+
             anim_m->pause();
+            qDebug()<<"pause22"<<anim_m->state();
+        }
         break;
     case AnimationType::Scale:
         if(anim_s->state() == QAbstractAnimation::Running)
@@ -253,6 +259,11 @@ Animate& Animate::pause(enum AnimationType animType){
     case AnimationType::Opacity:
         if(anim_o->state() == QAbstractAnimation::Running)
         anim_o->pause();
+        break;
+    case AnimationType::All:
+        this->pause(AnimationType::Move);
+        this->pause(AnimationType::Scale);
+        this->pause(AnimationType::Opacity);
         break;
     default:
         break;
@@ -274,6 +285,11 @@ Animate& Animate::stop(enum AnimationType animType){
         if(anim_o->state() == QAbstractAnimation::Running)
             anim_o->stop();
         break;
+    case AnimationType::All:
+        this->stop(AnimationType::Move);
+        this->stop(AnimationType::Scale);
+        this->stop(AnimationType::Opacity);
+        break;
     default:
         break;
     }
@@ -283,8 +299,14 @@ Animate& Animate::resume(enum AnimationType animType){
     //停止动画
     switch (animType) {
     case AnimationType::Move:
+        qDebug()<<"resume"<<anim_s->state();
+
         if(anim_s->state() == QAbstractAnimation::Paused)
+        {
+
+
             anim_s->resume();
+        }
         if(anim_s->state()==QAbstractAnimation::Stopped)
             anim_s->start();
         break;
@@ -300,6 +322,10 @@ Animate& Animate::resume(enum AnimationType animType){
         if(anim_o->state()==QAbstractAnimation::Stopped)
             anim_o->start();
         break;
+    case AnimationType::All:
+        this->resume(AnimationType::Move);
+        this->resume(AnimationType::Scale);
+        this->resume(AnimationType::Opacity);
     default:
         break;
     }

@@ -4,7 +4,8 @@
 #include<iostream>
 
 PlantArea::PlantArea(int row,int col,enum LandType landType)
-    :width(81),height(94),isEmpty(true),landType(landType),bg(nullptr),Myplant(nullptr),row(row),col(col)
+    :MyObject(nullptr),
+    width(81),height(94),isEmpty(true),landType(landType),bg(nullptr),Myplant(nullptr),row(row),col(col)
 {
    setAcceptHoverEvents(true); // 关键：允许接收悬停事件
     setAcceptDrops(true); // 启用拖放
@@ -20,8 +21,8 @@ void PlantArea::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
     if(bg){
         painter->drawPixmap(0,0,bg->pixmap());
     }
-//     painter->setPen(Qt::white);
-//     painter->drawRect(this->boundingRect());
+    painter->setPen(Qt::white);
+    painter->drawRect(this->boundingRect());
  }
 //static int sunlightGenerate();
 PlantArea::~PlantArea(){
@@ -94,6 +95,7 @@ void PlantArea::plant(enum PlantType plantType){
         });
         newPlant->setPos(width/2,height/2);
         connect(this,&PlantArea::GameOver,newPlant,&MyObject::GameOver);
+
         Myplant = newPlant;
         setEmpty(false);
     }

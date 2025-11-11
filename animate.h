@@ -13,7 +13,8 @@ class Animate;
 enum class AnimationType{
     Move,
     Scale,
-    Opacity
+    Opacity,
+    All
 };
 
 class Animate

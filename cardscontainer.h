@@ -5,8 +5,9 @@
 #include <QGraphicsPixmapItem>
 #include"card.h"
 #include<QVector>
+#include"myobj.h"
 
-class CardsContainer : public QGraphicsObject
+class CardsContainer : public MyObject
 {
     Q_OBJECT
 protected:

@@ -16,7 +16,9 @@ enum class Type{
     PLANT,
     ZOMBIE,
     Bullet,
-    Mower
+    Mower,
+    Bg,
+    Other
 };
 enum class ZombieType{
     None,
@@ -49,7 +51,7 @@ class MyObject : public QGraphicsObject
 
 
 public:
-    explicit MyObject(QGraphicsObject *parent,QString objPath,const enum Type type);
+    explicit MyObject(QGraphicsObject *parent,QString objPath = "",const enum Type type = Type::Other);
     // 必须实现的虚函数
     QRectF boundingRect() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
@@ -60,6 +62,7 @@ public:
 
 protected:
     GameScene* gameScene;
+    GameScene* getGameScene();//得到场景数据函数
     const enum Type type;
     const QString objPath;
     QString CurrentGif;
@@ -76,11 +79,13 @@ signals:
     void movieFinished();
     void GameOver();
     void needToDel();
+public slots:
+    virtual void GamePause();
+    virtual void GameContinue();
 
 protected slots:
     virtual void frameChanged(int frameNumber);
-    virtual void GamePause();
-    virtual void GameContinue();
+
 };
 
 #endif // MYOBJECT_H

@@ -26,7 +26,7 @@ enum class LandType{
     Water
 };
 
-class PlantArea:public QGraphicsObject
+class PlantArea:public MyObject
 {
     Q_OBJECT
     int width;
@@ -38,7 +38,7 @@ class PlantArea:public QGraphicsObject
     QGraphicsPixmapItem *bg;
     Plant *Myplant;
 
-    QTimer *bulletTimer;
+
 
     //
     void setEmpty(bool isEmpty){this->isEmpty = isEmpty;}

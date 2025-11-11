@@ -11,9 +11,8 @@ MyObject::MyObject(QGraphicsObject *parent,QString objPath,const enum Type type)
     //得到scene
     gameScene = dynamic_cast<GameScene*>(this->scene());
     if(!gameScene){
-        qDebug()<<"gameScene 转化失败，对象创建失败";
-        deleteLater();
-    }
+        // qDebug()<<"gameScene 转化失败，对象创建失败"<<objPath;
+    }//一般类实例初始化时还没加入场景，所以不能在这时候初始化gamescene,另外写函数
     //启动计时器并连接
     timer = new QTimer();
     connect(timer,&QTimer::timeout,this,[=](){
@@ -29,24 +28,35 @@ MyObject::MyObject(QGraphicsObject *parent,QString objPath,const enum Type type)
 
     timer->start(100);
     //启动movie
-    movie = new QMovie(objPath,QByteArray(),this);
-    if(movie->isValid()){
-        movie->setCacheMode(QMovie::CacheAll);
-        connect(movie,&QMovie::frameChanged,this,&MyObject::frameChanged);
-        connect(movie,&QMovie::finished,this,&MyObject::movieFinished);
-        movie->start();
+    if(!objPath.isEmpty())
+    {
+        movie = new QMovie(objPath,QByteArray(),this);
+        if(movie->isValid()){
+            movie->setCacheMode(QMovie::CacheAll);
+            connect(movie,&QMovie::frameChanged,this,&MyObject::frameChanged);
+            connect(movie,&QMovie::finished,this,&MyObject::movieFinished);
+            movie->start();
+        }
     }
     // 构造函数实现
-}
 
+}
+GameScene* MyObject::getGameScene(){
+    gameScene = dynamic_cast<GameScene*>(this->scene());
+    if(!gameScene){
+        qDebug()<<"gameScene 转化失败，无法获得游戏场景数据";
+    }//一般类实例初始化时还没加入场景，所以不能在这时候初始化gamescene,另外写函数
+    return gameScene;
+}
 QRectF MyObject::boundingRect() const{
     if(movie){
         int w = movie->currentPixmap().width();
         int h = movie->currentPixmap().height();
+
         return QRectF(-w/2,-h/2,w,h);
     }
     else {
-        return QRectF(0,0,50,50);
+        return QRectF(25,25,50,50);
     }
 }
 
@@ -60,9 +70,11 @@ void MyObject::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
     painter->setPen(Qt::red);
     painter->drawPath(shape());
 
-    int w = movie->currentPixmap().width();
-    int h = movie->currentPixmap().height();
+    int w = 50;
+    int h = 50;
     if(movie){
+        w = movie->currentPixmap().width();
+        h = movie->currentPixmap().height();
         painter->drawPixmap(-w/2,-h/2,movie->currentPixmap());
     }
     else painter->drawPixmap(-w/2,-h/2,QPixmap(50,50));
@@ -86,7 +98,7 @@ void MyObject::CheckMeet(){
 
 void MyObject::changeGif(QString newPath){
 
-    if(movie->fileName() != newPath)//仅当俩者不同时变化，提高效率；
+    if(movie && movie->fileName() != newPath)//仅当俩者不同时变化，提高效率；
     {
         movie->stop();                // 停止当前动画
         movie->setFileName(newPath);  // 设置新路径
@@ -104,6 +116,7 @@ void MyObject::setCurrentGif(){
 }
 
 void MyObject::ToCurrentGif(){
+
      this->changeGif(CurrentGif);
 }
 
@@ -117,9 +130,13 @@ void MyObject::GamePause(){
     if(timer->isActive()){
         timer->stop();
     }
+    Animate(this).pause(AnimationType::All);
+    qDebug()<<"pause1";
 }
 void MyObject::GameContinue(){
     if(!timer->isActive()){
         timer->start();
     }
+    Animate(this).resume(AnimationType::All);
+    qDebug()<<"continue";
 }

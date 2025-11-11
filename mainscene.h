@@ -44,7 +44,6 @@ class MainScene : public QMainWindow
 
 public:
     MainScene(QWidget *parent = nullptr);
-    Shop *getShop(){return shop;}
     ~MainScene();
 
 signals:
@@ -54,26 +53,15 @@ signals:
 
 private:
     Ui::MainScene *ui;
-    QGraphicsScene *scene;
+    //
+    GameScene *scene;
     QGraphicsView *view;
-    Shop *shop;
-    SelectPlant *selectPlant;
-    QSettings *settings;
-    QMediaPlayer *bgMus;
-    QAudioOutput *audioOutput;
-    Shovel * shovel;
+   //
     SettingsMenu *settingsMenu;
-    //QTimer
-    QTimer *moveTimer;
-    QTimer *timer;
     //栈UI
     QStackedWidget *stackedWidget;
     StartWidget *startWidget;
 
-    void PlantAreaGenerate();
-    void ZombieGenerate();
-    void cardAvailable();
-    void GameStart();
     void GamePre();
 
 

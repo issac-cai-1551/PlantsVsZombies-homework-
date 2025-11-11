@@ -22,11 +22,15 @@
 #include"plant.h"
 #include"zombie.h"
 #include<QSettings>
+#include"settingsmenu.h"
 
 
 class GameScene : public QGraphicsScene
 {
     Q_OBJECT
+    //外部控件，不跟随gamescene生命周期
+    SettingsMenu *settingsMenu;
+
     //archive
     QSettings *settings;
     //相关控件
@@ -46,22 +50,36 @@ class GameScene : public QGraphicsScene
     QMediaPlayer *bgMus;//背景音播放器
     QAudioOutput *audioOutput;
 
+    //背景
+    QString bgPath;
+    QGraphicsPixmapItem *gameBg;
     //QTimer
     QTimer *waveTimer;
 
+    void moveBg();
+
+public:
+    explicit GameScene(QObject *parent = nullptr);
     void PlantAreaGenerate();
     void ZombieGenerate();
     void cardAvailable();
+    void menuInit();
     void GameStart();
     void GamePre();
-public:
-    explicit GameScene(QObject *parent = nullptr);
+    void playBGM();
+    //函数
+    void addItem(MyObject* item);
+    void addItem(QGraphicsItem* item);
+
+    void setMenu(SettingsMenu *settingsMenu){settingsMenu = settingsMenu;}
 
 public slots:
-    void plant();//种植植物
+    void plant(enum PlantType plantType);//种植植物
     void move(MyObject* target,QPointF& dest);//移动物体
 signals:
     void GameOver();
+    void GamePause();
+    void GameContinue();
 
     
 };
