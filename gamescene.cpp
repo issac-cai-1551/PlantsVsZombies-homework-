@@ -4,12 +4,14 @@
 #include<QGraphicsProxyWidget>
 #include<QTimeLine>
 #include<QGraphicsItemAnimation>
+#include"dominator.h"
 
 GameScene::GameScene(QObject *parent)
     : QGraphicsScene(parent),settingsMenu(nullptr),
     plantareas(),zombies(),plants(),
     plantAreaRow(),plantRow(),zombieRow(),
-    bgPath(":/res/GameRes/images/Background.jpg"),gameBg(nullptr)
+    bgPath(":/res/GameRes/images/Background.jpg"),gameBg(nullptr),
+    dominator(nullptr)
 {
     //archive
     settings = new QSettings("config.ini",QSettings::IniFormat);
@@ -22,17 +24,8 @@ GameScene::GameScene(QObject *parent)
     addItem(shovel);
     gameBg = new QGraphicsPixmapItem(QPixmap(bgPath));
     addItem(gameBg);
-
-    // //音效
-    // bgMus = new QMediaPlayer(this);
-    // audioOutput = new QAudioOutput(this);
-    // audioOutput->setVolume(0.5);
-    // bgMus->setAudioOutput(audioOutput);
-    // bgMus->setSource(QUrl("qrc:/res/GameRes/GrazyDave2.mp3"));
-    // bgMus->setLoops(-1);
-    // bgMus->play();
-
-
+    dominator = new Dominator();
+    addItem(dominator);
 
     //QTimer
     waveTimer = new QTimer(this);
@@ -60,8 +53,15 @@ void GameScene::playBGM(){
     bgMus->setLoops(-1);
     bgMus->play();
 }
+//处理dominator行动逻辑
+void GameScene::DominatorAct(){
+    if(!dominator)return;
+    dominator->setPos(this->sceneRect().center());
+    dominator->setZValue(10);
+}
 //选这植物阶段
 void GameScene::GamePre(){
+
     //选择版
     cardAvailable();
     selectPlant->setPos(290,100);
@@ -136,7 +136,8 @@ void GameScene::GamePre(){
     shop->setPos(290, 0);
 }
 void GameScene::GameStart(){
-
+    //dominator
+    DominatorAct();
     //shovel
     shovel->setPos(shovel->getStartPos());
 
@@ -298,6 +299,7 @@ void GameScene::ZombieGenerate(){
         zombie->setPos(start);
         zombies.push_back(zombie);
         this->zombieRow[row].push_back(zombie);
+        zombie->setZValue(row);
         addItem(zombie);
 
         //处理僵尸行走

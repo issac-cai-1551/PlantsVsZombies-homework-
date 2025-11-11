@@ -24,10 +24,13 @@
 #include<QSettings>
 #include"settingsmenu.h"
 
+class Dominator;
 
 class GameScene : public QGraphicsScene
 {
     Q_OBJECT
+    //dominator
+    Dominator* dominator;
     //外部控件，不跟随gamescene生命周期
     SettingsMenu *settingsMenu;
 
@@ -73,9 +76,9 @@ public:
 
     void setMenu(SettingsMenu *settingsMenu){settingsMenu = settingsMenu;}
 
-public slots:
     void plant(enum PlantType plantType);//种植植物
     void move(MyObject* target,QPointF& dest);//移动物体
+    void DominatorAct();//处理dominator行动逻辑
 signals:
     void GameOver();
     void GamePause();

@@ -18,6 +18,7 @@ enum class Type{
     Bullet,
     Mower,
     Bg,
+    Dominator,
     Other
 };
 enum class ZombieType{
