@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include"myobj.h"
+#include "dialogbox.h"
 
 enum class PlantType;
 //开始写最关键的内容
@@ -10,7 +11,8 @@ enum class PlantType;
 class Dominator : public MyObject
 {
     Q_OBJECT
-
+protected:
+    DialogBox *dialog;
 public:
     Dominator();
     virtual void setCurrentGif();//设计各种情况的图片gif,或许可以利用来进行类继承
